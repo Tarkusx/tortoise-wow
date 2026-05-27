@@ -191,6 +191,7 @@ set (game_SRCS
     PacketBroadcast/PlayerBroadcaster.cpp
     PlayerBots/PlayerBotAI.cpp
     PlayerBots/PlayerBotMgr.cpp
+    ../modules/Bots/upstream/playerbot/PlayerbotAIConfig.cpp
     Protocol/Opcodes.cpp
     Protocol/WorldSocket.cpp
     Protocol/WorldSocketMgr.cpp
@@ -547,6 +548,16 @@ include_directories(
   ${TBB_INCLUDE_DIRS}
   ${ACE_INCLUDE_DIR}
   ${OPENSSL_INCLUDE_DIR}
+)
+
+include_directories(
+  ${CMAKE_SOURCE_DIR}/src/modules/Bots/include
+  ${CMAKE_SOURCE_DIR}/src/modules/Bots/upstream
+)
+
+set_source_files_properties(../modules/Bots/upstream/playerbot/PlayerbotAIConfig.cpp PROPERTIES
+  COMPILE_DEFINITIONS "MANGOSBOT_ZERO;PLAYERBOT_RUNTIME_BOOTSTRAP=0"
+  COMPILE_FLAGS "-include ${CMAKE_SOURCE_DIR}/src/modules/Bots/include/PlayerbotsCompatibility.h"
 )
 
 if(WIN32)

@@ -1,0 +1,3 @@
+[submodule "src/modules/Bots/upstream"]
+	path = src/modules/Bots/upstream
+	url = https://github.com/Tarkusx/playerbots.git

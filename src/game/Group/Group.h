@@ -312,6 +312,7 @@ class Group
         bool IsCrossfaction() const;
         bool UpdateCrossfaction();
 
+        ObjectGuid GetTargetIcon(uint8 id) const { return id < TARGET_ICON_COUNT ? m_targetIcons[id] : ObjectGuid(); }
         void SetTargetIcon(uint8 id, ObjectGuid targetGuid);
         void ClearTargetIcon(ObjectGuid targetGuid);
         uint16 InInstance();

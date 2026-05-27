@@ -28,6 +28,13 @@ add_subdirectory(realmd)
 add_subdirectory(game)
 add_subdirectory(mangosd)
 
+if(BUILD_PLAYERBOTS)
+  add_subdirectory(modules/Bots)
+  if(TARGET playerbots)
+    target_link_libraries(mangosd playerbots)
+  endif()
+endif()
+
 if(USE_SCRIPTS)
   add_subdirectory(scripts)
 endif()

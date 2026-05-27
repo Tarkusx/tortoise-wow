@@ -63,6 +63,7 @@ class Spell;
 class Item;
 class ZoneScript;
 class PlayerAI;
+class PlayerbotAI;
 class PlayerBroadcaster;
 class MapReference;
 
@@ -1145,6 +1146,7 @@ class Player final: public Unit
         void SetHCChat(bool on) { if (!on) m_ExtraFlags |= PLAYER_EXTRA_DISABLE_HC_CHAT; else m_ExtraFlags &= ~PLAYER_EXTRA_DISABLE_HC_CHAT; }
         bool IsTaxiCheater() const { return m_ExtraFlags & PLAYER_EXTRA_TAXICHEAT; }
         void SetTaxiCheater(bool on) { if(on) m_ExtraFlags |= PLAYER_EXTRA_TAXICHEAT; else m_ExtraFlags &= ~PLAYER_EXTRA_TAXICHEAT; }
+        bool IsStunnedByLogout() const { return HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED); }
         bool IsGMVisible() const { return !(m_ExtraFlags & PLAYER_EXTRA_GM_INVISIBLE); }
         bool HasGMDisabledSocials() const { return m_ExtraFlags & PLAYER_EXTRA_GM_DISABLE_SOCIAL; }
         void SetGMSocials(bool on, bool init = false);
@@ -2323,6 +2325,9 @@ class Player final: public Unit
         PlayerAI* i_AI;
         PlayerAI* AI() { return i_AI; }
         void setAI(PlayerAI* otherAI) { i_AI = otherAI; }
+        PlayerbotAI* GetPlayerbotAI() const;
+        void CreatePlayerbotAI();
+        void RemovePlayerbotAI();
         void SetControlledBy(Unit* Who);
         bool ChangeRace(uint8 newRace, uint8 newGender, uint32 playerbyte1, uint32 playerbyte2);
         void RemoveAI();
@@ -2345,6 +2350,7 @@ class Player final: public Unit
     public:
         WorldSession* GetSession() const { return m_session; }
         void SetSession(WorldSession* s);
+        bool isRealPlayer() const { return GetSession() && GetSession()->GetRemoteAddress() != "disconnected/bot"; }
 
         void BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target) const override;
         void DestroyForPlayer(Player* target) const override;

@@ -12,6 +12,8 @@
 #include "Player.h"
 #include "PlayerBotAI.h"
 #include "Anticheat.h"
+#include "PlayerbotsCompatibility.h"
+#include "playerbot/PlayerbotAIConfig.h"
 
 PlayerBotMgr sPlayerBotMgr;
 
@@ -63,6 +65,7 @@ void PlayerBotMgr::Load()
 
     // 2- Configuration
     LoadConfig();
+    sPlayerbotAIConfig.LoadConfig();
 
     // 3- Load usable account ID
     QueryResult *result = LoginDatabase.PQuery("SELECT MAX(id) FROM account");

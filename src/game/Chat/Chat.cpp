@@ -965,6 +965,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "anonymous",      SEC_DEVELOPER,       false, nullptr,                                        "", anonymousCommandTable},
         { "hcmessages",     SEC_PLAYER,          false, &ChatHandler::HandleHCMessagesCommand,          "", nullptr },
         { "discbot",        SEC_ADMINISTRATOR,   true,  nullptr,                                        "", discBotCommandTable},
+        { "rndbot",         SEC_CONSOLE,         true,  &ChatHandler::HandleRandomPlayerbotCommand,     "", nullptr },
         { "minchatlevel",   SEC_ADMINISTRATOR,   true,  &ChatHandler::HandleMinChatLevelCommand,        "", nullptr },
         { "pvp",            SEC_DEVELOPER,       false, &ChatHandler::HandlePvPCommand,                 "", nullptr},
         { "mmaps",          SEC_DEVELOPER,       false, nullptr,                                        "", mmapsCommandTable },
@@ -3774,4 +3775,3 @@ const char *NullChatHandler::GetMangosString(int32 entry) const
 {
     return sObjectMgr.GetMangosStringForDBCLocale(entry);
 }
-

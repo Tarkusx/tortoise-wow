@@ -132,6 +132,8 @@ class ChatHandler
         Player* GetPlayer();
 
         void SendBanResult(BanMode mode, BanReturn result, std::string& banTarget, uint32 duration_secs, std::string& reason);
+        bool HandlePlayerbotCommand(char* args);
+        bool HandleAhBotCommand(char* args);
 
         /**
         * \brief Prepare SMSG_GM_MESSAGECHAT/SMSG_MESSAGECHAT
@@ -678,6 +680,7 @@ class ChatHandler
         bool HandleToggleIllusionsCommand(char* args);
         bool HandleSetHCChatCommand(char* args);
         bool HandleSetViewCommand(char* args);
+        bool HandleRandomPlayerbotCommand(char* args);
 
         bool HandleSetTimeCommand(char* args);
 
