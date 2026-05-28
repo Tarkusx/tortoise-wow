@@ -1,3 +1,3 @@
 #pragma once
 
-#include "GuildMgr.h"
+#include "Guild/GuildMgr.h"

@@ -1,3 +1,3 @@
 #pragma once
 
-#include "BattleGroundMgr.h"
+#include "Battlegrounds/BattleGroundMgr.h"

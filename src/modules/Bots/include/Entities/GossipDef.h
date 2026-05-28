@@ -1,3 +1,3 @@
 #pragma once
 
-#include "GossipDef.h"
+#include <GossipDef.h>

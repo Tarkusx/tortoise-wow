@@ -314,3 +314,101 @@ namespace PlayerbotsCompatibility
 
 inline PlayerbotsCompatibility::LootMgrCompatibility sLootMgr;
 inline PlayerbotsCompatibility::TaxiNodesStoreCompatibility sTaxiNodesStore;
+
+#define IsRaidGroup isRaidGroup
+#define CanReachWithMeleeAttack CanReachWithMeleeAutoAttack
+#define IsInSwimmableWater IsReachableBySwmming
+
+#define GetPlayerMenu() PlayerTalkClass
+#define GetLootState getLootState
+#define GetSpellRecoveryTime(proto) (proto)->GetRecoveryTime()
+
+#define TRIGGERED_OLD_TRIGGERED true
+#define TRIGGERED_NONE false
+#define GetMasterLooterGuid GetLooterGuid
+
+#define TAXI_MOTION_TYPE FLIGHT_MOTION_TYPE
+#define UnitAI CreatureAI
+
+
+struct AuctionEntry;
+uint32 GetAuctionItemCount(AuctionEntry const* entry);
+
+
+#define coord_x x
+#define coord_y y
+#define coord_z z
+
+typedef uint32 ForcedMovement;
+#define FORCED_MOVEMENT_NONE MOVE_NONE
+#define FORCED_MOVEMENT_RUN MOVE_RUN_MODE
+#define FORCED_MOVEMENT_WALK MOVE_WALK_MODE
+#define FORCED_MOVEMENT_FLIGHT MOVE_FLY_MODE
+
+#include <vector>
+#include "G3D/Vector3.h"
+class Unit;
+void MovePath(Unit* bot, std::vector<G3D::Vector3> const& path, uint32 options, bool cyclic, bool falling = false);
+
+enum BG_AB_GameObjects_compat
+{
+    BG_AB_BANNER_ALLIANCE       = 180087,
+    BG_AB_BANNER_HORDE          = 180088,
+    BG_AB_BANNER_CONTESTED_A    = 180089,
+    BG_AB_BANNER_CONTESTED_H    = 180090,
+    BG_AB_BANNER_STABLE         = 180076,
+    BG_AB_BANNER_BLACKSMITH     = 180078,
+    BG_AB_BANNER_FARM           = 180080,
+    BG_AB_BANNER_LUMBER_MILL    = 180082,
+    BG_AB_BANNER_MINE           = 180084,
+};
+
+#define GO_WS_SILVERWING_FLAG WS_ALLIANCE_FLAG_BASE
+#define GO_WS_WARSONG_FLAG WS_HORDE_FLAG_BASE
+#define GO_WS_SILVERWING_FLAG_DROP WS_ALLIANCE_FLAG_GROUND
+#define GO_WS_WARSONG_FLAG_DROP WS_HORDE_FLAG_GROUND
+
+#define GetTeamIndexByTeamId BattleGround::GetTeamIndexByTeamId
+#define HandleBattlefieldPortOpcode HandleBattleFieldPortOpcode
+#define CanInteract CanInteractWithGameObject
+// Replaced toxic IsInUse() macro with inline free function to avoid collision with SpellAuras::IsInUse()
+inline bool GameObjectIsInUse(const GameObject* go) { return go && go->getLootState() == GO_ACTIVATED; }
+// Turtle uses lowercase getLootState(); upstream uses GetLootState()
+#define GetLootState getLootState
+#define DIST_CALC_NONE SizeFactor::None
+
+#define WS_AT_WARSONG_ROOM AREATRIGGER_HORDE_FLAG_SPAWN
+#define WS_AT_SILVERWING_ROOM AREATRIGGER_ALLIANCE_FLAG_SPAWN
+
+#include "Battlegrounds/BattleGroundWS.h"
+inline ObjectGuid GetFlagCarrierGuid(BattleGroundWS* bg, uint32 teamIndex)
+{
+    return bg ? (teamIndex == BG_TEAM_ALLIANCE ? bg->GetAllianceFlagPickerGuid() : bg->GetHordeFlagPickerGuid()) : ObjectGuid();
+}
+
+// ---- BattleGround bracket ID: in Turtle this is a static method on Player ----
+#include "Objects/Player.h"
+inline BattleGroundBracketId GetBGBracketIdFromLevel(BattleGroundTypeId bgTypeId, uint32 level)
+{
+    return Player::GetBattleGroundBracketIdFromLevel(bgTypeId, level);
+}
+
+// ---- BG_AB_NODE_STATUS_NEUTRAL = BG_AB_NODE_TYPE_NEUTRAL in Turtle ----
+#include "Battlegrounds/BattleGroundAB.h"
+#ifndef BG_AB_NODE_STATUS_NEUTRAL
+#define BG_AB_NODE_STATUS_NEUTRAL BG_AB_NODE_TYPE_NEUTRAL
+#endif
+
+// ---- WorldLocation::mapid renamed to mapId in Turtle ----
+#ifndef mapid
+#define mapid mapId
+#endif
+
+// ---- Position::GetDistance does not exist in Turtle Position struct ----
+#include <cmath>
+inline float PositionGetDistance(const Position& a, const Position& b)
+{
+    float dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
+    return std::sqrt(dx*dx + dy*dy + dz*dz);
+}
+

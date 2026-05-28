@@ -1,3 +1,3 @@
 #pragma once
 
-#include "LootMgr.h"
+#include <LootMgr.h>

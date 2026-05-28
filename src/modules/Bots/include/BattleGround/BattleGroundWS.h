@@ -1,2 +1,3 @@
 #pragma once
-#include "BattleGroundWS.h"
+
+#include "Battlegrounds/BattleGroundWS.h"

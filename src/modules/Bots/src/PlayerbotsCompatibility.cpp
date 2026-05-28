@@ -1,6 +1,7 @@
 #include "PlayerbotsCompatibility.h"
 
 #include "Entities/Player.h"
+#include "AuctionHouse/AuctionHouseMgr.h"
 #include "LootMgr.h"
 #include "Objects/Corpse.h"
 #include "Objects/Item.h"
@@ -157,3 +158,42 @@ WorldLocation PlayerbotsCompatibility::GetSpawnLocation(GameObjectDataPair const
 {
     return pair ? pair->second.position : WorldLocation();
 }
+
+uint32 GetAuctionItemCount(AuctionEntry const* entry)
+{
+    if (!entry)
+        return 0;
+    if (Item* item = sAuctionMgr.GetAItem(entry->itemGuidLow))
+        return item->GetCount();
+    return 1;
+}
+
+#include "Movement/spline/MoveSplineInit.h"
+#include "Movement/PointMovementGenerator.h"
+
+void MovePath(Unit* bot, std::vector<G3D::Vector3> const& path, uint32 options, bool cyclic, bool falling)
+{
+    if (!bot || path.empty())
+        return;
+
+    if (!bot->IsStopped())
+        bot->StopMoving();
+
+    bot->AddUnitState(UNIT_STAT_ROAMING | UNIT_STAT_ROAMING_MOVE);
+    Movement::MoveSplineInit init(*bot, "PlayerbotsMovePath");
+    init.MovebyPath(path);
+    if (options & MOVE_WALK_MODE)
+        init.SetWalk(true);
+    if (options & MOVE_RUN_MODE)
+        init.SetWalk(false);
+    if (options & MOVE_FLY_MODE)
+        init.SetFly();
+    if ((options & MOVE_FALLING) || falling)
+        init.SetFall();
+    if ((options & MOVE_CYCLIC) || cyclic)
+        init.SetCyclic();
+    init.Launch();
+
+    bot->GetMotionMaster()->Mutate(new EffectMovementGenerator(0));
+}
+
