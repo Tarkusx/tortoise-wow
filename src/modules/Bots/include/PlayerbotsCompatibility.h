@@ -18,6 +18,12 @@
 #define DEFAULT_MAX_LEVEL PLAYER_MAX_LEVEL
 #endif
 
+#ifndef UNIT_FLAG_CLIENT_CONTROL_LOST
+#define UNIT_FLAG_CLIENT_CONTROL_LOST UNIT_FLAG_UNK_0
+#endif
+
+#define InterruptMoving(force) StopMoving(force)
+
 #ifndef TEAM_BOTH_ALLOWED
 constexpr Team TEAM_BOTH_ALLOWED = TEAM_NONE;
 #endif
