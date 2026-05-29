@@ -197,3 +197,17 @@ void MovePath(Unit* bot, std::vector<G3D::Vector3> const& path, uint32 options, 
     bot->GetMotionMaster()->Mutate(new EffectMovementGenerator(0));
 }
 
+bool PlayerbotsCompatibility::MeleeAttackStart(Player* player, Unit* target)
+{
+    return player && player->Attack(target, true);
+}
+
+bool PlayerbotsCompatibility::MeleeAttackStop(Player* player, Unit* target)
+{
+    if (!player || !player->HasUnitState(UNIT_STAT_MELEE_ATTACKING))
+        return false;
+
+    player->ClearUnitState(UNIT_STAT_MELEE_ATTACKING);
+    player->SendMeleeAttackStop(target);
+    return true;
+}

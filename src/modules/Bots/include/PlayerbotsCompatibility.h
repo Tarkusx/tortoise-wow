@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef PLAYERBOT_RUNTIME_BOOTSTRAP
+#define PLAYERBOT_RUNTIME_BOOTSTRAP 1
+#endif
+
 #include "Common.h"
 #include "Database/DBCEnums.h"
 #include "Globals/ObjectMgr.h"
@@ -310,6 +314,21 @@ namespace PlayerbotsCompatibility
     uint32 CalculateTalentPoints(Player const* player);
     WorldLocation GetSpawnLocation(CreatureDataPair const* pair);
     WorldLocation GetSpawnLocation(GameObjectDataPair const* pair);
+    inline Item* GetItemByEntry(Player const* player, uint32 entry)
+    {
+        Item* found = nullptr;
+        if (player)
+        {
+            player->ApplyForAllItems([entry, &found](Item* item)
+            {
+                if (!found && item->GetEntry() == entry)
+                    found = item;
+            }, false);
+        }
+        return found;
+    }
+    bool MeleeAttackStart(Player* player, Unit* target);
+    bool MeleeAttackStop(Player* player, Unit* target);
 }
 
 inline PlayerbotsCompatibility::LootMgrCompatibility sLootMgr;
@@ -399,10 +418,6 @@ inline BattleGroundBracketId GetBGBracketIdFromLevel(BattleGroundTypeId bgTypeId
 #define BG_AB_NODE_STATUS_NEUTRAL BG_AB_NODE_TYPE_NEUTRAL
 #endif
 
-// ---- WorldLocation::mapid renamed to mapId in Turtle ----
-#ifndef mapid
-#define mapid mapId
-#endif
 
 // ---- Position::GetDistance does not exist in Turtle Position struct ----
 #include <cmath>
@@ -411,4 +426,60 @@ inline float PositionGetDistance(const Position& a, const Position& b)
     float dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
     return std::sqrt(dx*dx + dy*dy + dz*dz);
 }
+// ---- BG_AV_NODE_STATUS_* aliases for Turtle's BG_AV_Event_Control_State ----
+#ifndef BG_AV_NODE_STATUS_ALLY_CONTESTED
+#define BG_AV_NODE_STATUS_ALLY_CONTESTED ALLIANCE_ASSAULTED
+#endif
+#ifndef BG_AV_NODE_STATUS_ALLY_OCCUPIED
+#define BG_AV_NODE_STATUS_ALLY_OCCUPIED ALLIANCE_CONTROLLED
+#endif
+#ifndef BG_AV_NODE_STATUS_HORDE_CONTESTED
+#define BG_AV_NODE_STATUS_HORDE_CONTESTED HORDE_ASSAULTED
+#endif
+#ifndef BG_AV_NODE_STATUS_HORDE_OCCUPIED
+#define BG_AV_NODE_STATUS_HORDE_OCCUPIED HORDE_CONTROLLED
+#endif// ---- TEAM_INDEX_* aliases for Turtle's BattleGroundTeamIndex / BattleGroundAVTeamIndex ----
+#ifndef TEAM_INDEX_ALLIANCE
+#define TEAM_INDEX_ALLIANCE 0
+#endif
+#ifndef TEAM_INDEX_HORDE
+#define TEAM_INDEX_HORDE 1
+#endif
+#ifndef TEAM_INDEX_NEUTRAL
+#define TEAM_INDEX_NEUTRAL 2
+#endif
 
+// ---- BG_AV_NODE_STATUS_NEUTRAL_OCCUPIED ----
+#ifndef BG_AV_NODE_STATUS_NEUTRAL_OCCUPIED
+#define BG_AV_NODE_STATUS_NEUTRAL_OCCUPIED NEUTRAL_CONTROLLED
+#endif
+
+// ---- BG_AV_NODE_CAPTAIN_DEAD_* ----
+#ifndef BG_AV_NODE_CAPTAIN_DEAD_A
+#define BG_AV_NODE_CAPTAIN_DEAD_A BG_AV_NodeEventCaptainDead_A
+#endif
+#ifndef BG_AV_NODE_CAPTAIN_DEAD_H
+#define BG_AV_NODE_CAPTAIN_DEAD_H BG_AV_NodeEventCaptainDead_H
+#endif
+
+// ---- BG_AV_GameObjects_compat ----
+enum BG_AV_GameObjects_compat
+{
+    BG_AV_GO_BANNER_ALLIANCE            = 179537,
+    BG_AV_GO_BANNER_ALLIANCE_CONT       = 179536,
+    BG_AV_GO_BANNER_HORDE               = 179535,
+    BG_AV_GO_BANNER_HORDE_CONT          = 179534,
+    BG_AV_GO_GY_BANNER_ALLIANCE         = 179838,
+    BG_AV_GO_GY_BANNER_ALLIANCE_CONT    = 179837,
+    BG_AV_GO_GY_BANNER_HORDE            = 179840,
+    BG_AV_GO_GY_BANNER_HORDE_CONT       = 179839,
+    BG_AV_GO_GY_BANNER_SNOWFALL         = 179841,
+};
+
+#include <random>
+
+inline std::mt19937* GetRandomGenerator()
+{
+    static thread_local std::mt19937 rng(std::random_device{}());
+    return &rng;
+}
