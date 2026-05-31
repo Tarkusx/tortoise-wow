@@ -194,7 +194,7 @@ void MovePath(Unit* bot, std::vector<G3D::Vector3> const& path, uint32 options, 
         init.SetCyclic();
     init.Launch();
 
-    bot->GetMotionMaster()->Mutate(new EffectMovementGenerator(0));
+    bot->GetMotionMaster()->MoveIdle();
 }
 
 bool PlayerbotsCompatibility::MeleeAttackStart(Player* player, Unit* target)

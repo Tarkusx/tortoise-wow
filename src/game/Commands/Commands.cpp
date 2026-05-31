@@ -8400,31 +8400,6 @@ bool ChatHandler::HandleSetHCChatCommand(char* args)
     return true;
 }
 
-bool ChatHandler::HandleRandomPlayerbotCommand(char* args)
-{
-    std::string command = args ? args : "";
-
-    if (command == "bootstrap")
-    {
-        if (sPlayerbotAIConfig.IsRuntimeBootstrapped())
-        {
-            PSendSysMessage("AI Playerbot runtime already initialized.");
-            return true;
-        }
-
-        if (!sPlayerbotAIConfig.BootstrapRuntime())
-        {
-            PSendSysMessage("AI Playerbot runtime bootstrap is unavailable in this build.");
-            return false;
-        }
-
-        PSendSysMessage("AI Playerbot runtime bootstrap completed.");
-        return true;
-    }
-
-    PSendSysMessage("Usage: rndbot bootstrap");
-    return false;
-}
 
 bool ChatHandler::HandleToggleIllusionsCommand(char* args)
 {
