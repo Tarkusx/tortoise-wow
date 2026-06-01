@@ -4,3 +4,14 @@
 /.vscode/
 *.kate-swp
 *.exe
+
+# Local runtime/server files
+/server/
+/build/
+*.pid
+egglog.txt
+honorupdate.txt
+racechange.log
+*.log
+*.core
+core
