@@ -12,6 +12,7 @@ add_subdirectory(upstream)
 if(TARGET playerbots)
   target_sources(playerbots PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/PlayerbotsCompatibility.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/PlayerbotsWorldHooks.cpp
   )
 
   target_compile_options(playerbots PRIVATE

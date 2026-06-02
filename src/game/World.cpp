@@ -95,6 +95,11 @@
 #include <ace/OS_NS_dirent.h>
 #include "PerformanceMonitor.h"
 
+#ifdef BUILD_PLAYERBOTS
+bool PlayerbotsLoadConfig();
+void PlayerbotsUpdateAI(uint32 diff);
+#endif
+
 #include <filesystem>
 
 #ifdef USING_DISCORD_BOT
@@ -2343,6 +2348,12 @@ void LoadPlayerEggLoot();
     sLog.outString("Fixing Hardcore Guild bank items..");
     sGuildMgr.FixupInfernoBanks();
 
+#ifdef BUILD_PLAYERBOTS
+    sLog.outString("Loading AI Playerbot configuration...");
+    if (!PlayerbotsLoadConfig())
+        sLog.outError("AI Playerbot configuration loading failed.");
+#endif
+
 #ifdef USING_DISCORD_BOT
     sLog.outString("Loading Discord Bot...");
 
@@ -2657,6 +2668,9 @@ void World::Update(uint32 diff)
 
     //Update PlayerBotMgr
     sPlayerBotMgr.Update(diff);
+#ifdef BUILD_PLAYERBOTS
+    PlayerbotsUpdateAI(diff);
+#endif
     // Update AutoBroadcast
     sAutoBroadCastMgr.Update(diff);
     // Update liste des ban si besoin
