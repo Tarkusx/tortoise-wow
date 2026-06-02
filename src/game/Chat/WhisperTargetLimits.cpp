@@ -18,22 +18,11 @@ WhisperTargetLimits::~WhisperTargetLimits()
 
 void WhisperTargetLimits::save_targets()
 {
-    std::function<void(bool)> callback = [this, sessId = _sess->GetAccountId()](bool result)
-    {
-        auto sess = sWorld.FindSession(sessId);
+    auto targets = targets_;
 
-        if (sess)
-        {
-            for (const auto& target : sess->GetWhisperTargets().targets_)
-            {
-                CharacterDatabase.PExecute("INSERT INTO `whisper_targets` (`account`, `target_guid`, `time`) VALUES (%u, %u, %u)", account_id_, target.first, target.second);
-            }
-        }
-    };
-
-    CharacterDatabase.PExecuteCallback("DELETE FROM `whisper_targets` WHERE `account` = %u", &callback, account_id_);
-
-
+    CharacterDatabase.PExecute("DELETE FROM `whisper_targets` WHERE `account` = %u", account_id_);
+    for (const auto& target : targets)
+        CharacterDatabase.PExecute("INSERT INTO `whisper_targets` (`account`, `target_guid`, `time`) VALUES (%u, %u, %u)", account_id_, target.first, target.second);
 }
 
 void WhisperTargetLimits::load_targets()
