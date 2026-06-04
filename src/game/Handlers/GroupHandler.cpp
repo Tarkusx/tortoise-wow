@@ -165,10 +165,17 @@ void WorldSession::HandleGroupInviteOpcode(WorldPacket & recv_data)
             return;
     }
 
-    // ok, we do it
-    WorldPacket data(SMSG_GROUP_INVITE, 10);                // guess size
-    data << GetPlayer()->GetName();
-    player->GetSession()->SendPacket(&data);
+    if (player->GetPlayerbotAI() && !player->GetSession()->GetSocket())
+    {
+        WorldPacket accept;
+        player->GetSession()->HandleGroupAcceptOpcode(accept);
+    }
+    else
+    {
+        WorldPacket data(SMSG_GROUP_INVITE, 10);                // guess size
+        data << GetPlayer()->GetName();
+        player->GetSession()->SendPacket(&data);
+    }
 
     SendPartyResult(PARTY_OP_INVITE, membername, ERR_PARTY_RESULT_OK);
 }

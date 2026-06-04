@@ -36,6 +36,9 @@ void PointMovementGenerator<T>::Initialize(T& unit)
         unit.StopMoving();
 
     unit.AddUnitState(UNIT_STAT_ROAMING | UNIT_STAT_ROAMING_MOVE);
+    if (unit.IsPlayer())
+        sLog.outString("PBDBG core point-init unit=%s guid=%u x=%.2f y=%.2f z=%.2f options=%u speed=%.2f stopped=%u",
+            unit.GetName(), unit.GetGUIDLow(), m_x, m_y, m_z, m_options, m_speed, unit.IsStopped() ? 1 : 0);
     Movement::MoveSplineInit init(unit, "PointMovementGenerator<T>::Initialize");
     init.MoveTo(m_x, m_y, m_z, m_options);
     if (m_speed > 0.0f)

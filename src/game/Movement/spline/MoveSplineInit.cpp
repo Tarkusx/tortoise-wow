@@ -65,6 +65,7 @@ int32 MoveSplineInit::Launch()
 {
     float realSpeedRun = 0.0f;
     MoveSpline& move_spline = *unit.movespline;
+    bool logPlayerMove = unit.IsPlayer();
 
     Transport* newTransport = nullptr;
     if (args.transportGuid)
@@ -120,7 +121,12 @@ int32 MoveSplineInit::Launch()
         realSpeedRun = unit.GetSpeed(MOVE_RUN);
 
     if (!args.Validate(&unit))
+    {
+        if (logPlayerMove)
+            sLog.outString("PBDBG core spline-launch unit=%s guid=%u result=validate-fail type=%s path=%zu",
+                unit.GetName(), unit.GetGUIDLow(), movementType, args.path.size());
         return 0;
+    }
 
     args.splineId = splineCounter++;
 
@@ -154,6 +160,11 @@ int32 MoveSplineInit::Launch()
     }
     else
         move_spline.setLastPointSent(PacketBuilder::WriteMonsterMove(move_spline, data));
+
+    if (logPlayerMove)
+        sLog.outString("PBDBG core spline-launch unit=%s guid=%u result=packet-ready type=%s path=%zu flags=0x%x speed=%.2f opcode=%u bytes=%zu",
+            unit.GetName(), unit.GetGUIDLow(), movementType, args.path.size(), moveFlags, args.velocity,
+            data.GetOpcode(), data.wpos());
 
     // Compress data or not ?
     bool compress = false;

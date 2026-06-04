@@ -1569,6 +1569,24 @@ void Player::Update(uint32 update_diff, uint32 p_time)
     if (!IsInWorld())
         return;
 
+    struct PlayerUpdatePbdbgTimer
+    {
+        Player* player;
+        uint32 updateDiff;
+        uint32 pTime;
+        uint32 startMs;
+
+        ~PlayerUpdatePbdbgTimer()
+        {
+            uint32 ms = WorldTimer::getMSTimeDiffToNow(startMs);
+            if (ms >= 25 && player->GetPlayerbotAI())
+                sLog.outString("PBDBG perf player-update player=%s guid=%u ms=%u updateDiff=%u pTime=%u moving=%u mm=%u",
+                    player->GetName(), player->GetGUIDLow(), ms, updateDiff, pTime,
+                    (!player->IsStopped() || player->GetMotionMaster()->GetCurrentMovementGeneratorType() != IDLE_MOTION_TYPE) ? 1 : 0,
+                    player->GetMotionMaster()->GetCurrentMovementGeneratorType());
+        }
+    } playerUpdatePbdbgTimer{this, update_diff, p_time, WorldTimer::getMSTime()};
+
     UpdateMirrorTimers(update_diff);
 
     //used to implement delayed far teleports

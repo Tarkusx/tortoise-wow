@@ -444,6 +444,9 @@ void MotionMaster::MoveFollow(Unit* target, float dist, float angle)
 void MotionMaster::MovePoint(uint32 id, float x, float y, float z, uint32 options, float speed, float finalOrientation)
 {
     DEBUG_FILTER_LOG(LOG_FILTER_AI_AND_MOVEGENSS, "%s targeted point (Id: %u X: %f Y: %f Z: %f)", m_owner->GetGuidStr().c_str(), id, x, y, z);
+    if (m_owner->IsPlayer())
+        sLog.outString("PBDBG core movepoint unit=%s guid=%u id=%u x=%.2f y=%.2f z=%.2f options=%u speed=%.2f",
+            m_owner->GetName(), m_owner->GetGUIDLow(), id, x, y, z, options, speed);
 
     if (m_owner->IsPlayer())
         Mutate(new PointMovementGenerator<Player>(id, x, y, z, options, speed, finalOrientation));

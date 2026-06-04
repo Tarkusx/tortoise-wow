@@ -830,7 +830,14 @@ void Map::UpdatePlayers()
             continue;
         }
         WorldObject::UpdateHelper helper(plr);
+        uint32 playerUpdateStart = WorldTimer::getMSTime();
         helper.UpdateRealTime(now, diff + plr->GetSkippedUpdateTime());
+        uint32 playerUpdateMs = WorldTimer::getMSTimeDiffToNow(playerUpdateStart);
+        if (playerUpdateMs >= 25 && plr->GetPlayerbotAI())
+            sLog.outString("PBDBG perf map-player-update map=%u inst=%u player=%s guid=%u ms=%u diff=%u skipped=%u moving=%u mm=%u",
+                GetId(), GetInstanceId(), plr->GetName(), plr->GetGUIDLow(), playerUpdateMs, diff, plr->GetSkippedUpdateTime(),
+                (!plr->IsStopped() || plr->GetMotionMaster()->GetCurrentMovementGeneratorType() != IDLE_MOTION_TYPE) ? 1 : 0,
+                plr->GetMotionMaster()->GetCurrentMovementGeneratorType());
         plr->ResetSkippedUpdateTime();
     }
     if (updateInactivePlayers)
@@ -950,6 +957,11 @@ void Map::Update(uint32 t_diff)
     m_weatherSystem->UpdateWeathers(t_diff);
 
     bool packetBroadcastSlow = sWorld.GetBroadcaster()->IsMapSlow(GetInstanceId());
+    if (updateMapTime >= 50)
+        sLog.outString("PBDBG perf map-update map=%u inst=%u total=%u sess=%u players=%u cells=%u obj=%u reloc=%u players2=%u waitCount=%u wait=%u slowBroadcast=%u",
+            GetId(), GetInstanceId(), updateMapTime, sessionsUpdateTime, playersUpdateTime, activeCellsUpdateTime,
+            objectsUpdateTime, visibilityUpdateTime, playersUpdateTime2, additionnalUpdateCounts, additionnalWaitTime,
+            packetBroadcastSlow ? 1 : 0);
     if (sWorld.getConfig(CONFIG_UINT32_PERFLOG_SLOW_MAP_UPDATE) && updateMapTime > sWorld.getConfig(CONFIG_UINT32_PERFLOG_SLOW_MAP_UPDATE))
         sLog.out(LOG_PERFORMANCE, "Update single map %3u inst %2u: %3ums "
             "[sess %3ums|players %3ums|cells %3ums|sendObjUpdates %3ums"
