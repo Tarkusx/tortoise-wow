@@ -97,7 +97,7 @@ void WorldSession::HandleGroupInviteOpcode(WorldPacket & recv_data)
         return;
 
     // Just ignore us
-    if (player->GetSocial()->HasIgnore(GetPlayer()->GetObjectGuid()))
+    if (PlayerSocial* social = player->FindSocial(); social && social->HasIgnore(GetPlayer()->GetObjectGuid()))
     {
         SendPartyResult(PARTY_OP_INVITE, membername, ERR_IGNORING_YOU_S);
         return;
@@ -167,8 +167,29 @@ void WorldSession::HandleGroupInviteOpcode(WorldPacket & recv_data)
 
     if (player->GetPlayerbotAI() && !player->GetSession()->GetSocket())
     {
-        WorldPacket accept;
-        player->GetSession()->HandleGroupAcceptOpcode(accept);
+        sLog.outString("PBDBG group-invite inviter=%s bot=%s stage=fake-accept-start created=%u members=%u",
+            GetPlayer()->GetName(), player->GetName(), group->IsCreated() ? 1 : 0, group->GetMembersCount());
+
+        group->RemoveInvite(player);
+
+        Player* leader = sObjectMgr.GetPlayer(group->GetLeaderGuid());
+        if (!group->IsCreated())
+        {
+            if (leader)
+                group->RemoveInvite(leader);
+            if (group->Create(group->GetLeaderGuid(), group->GetLeaderName()))
+                sObjectMgr.AddGroup(group);
+            else
+                return;
+        }
+
+        if (!group->AddMember(player->GetObjectGuid(), player->GetName()))
+            return;
+
+        group->BroadcastGroupUpdate();
+        sLog.outString("PBDBG group-invite inviter=%s bot=%s stage=fake-accept-end created=%u members=%u inviterGrouped=%u botGrouped=%u",
+            GetPlayer()->GetName(), player->GetName(), group->IsCreated() ? 1 : 0, group->GetMembersCount(),
+            GetPlayer()->GetGroup() == group ? 1 : 0, player->GetGroup() == group ? 1 : 0);
     }
     else
     {

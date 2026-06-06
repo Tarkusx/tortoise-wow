@@ -894,6 +894,31 @@ void WorldSession::HandleTextEmoteOpcode(WorldPacket & recv_data)
     if (!GetPlayer()->IsAlive())
         return;
 
+    if (!GetSocket())
+    {
+        uint32 textEmote, emoteNum;
+        ObjectGuid guid;
+        recv_data >> textEmote;
+        recv_data >> emoteNum;
+        recv_data >> guid;
+
+        if (EmotesTextEntry const* em = sEmotesTextStore.LookupEntry(textEmote))
+        {
+            switch (em->textid)
+            {
+                case EMOTE_STATE_SLEEP:
+                case EMOTE_STATE_SIT:
+                case EMOTE_STATE_KNEEL:
+                case EMOTE_ONESHOT_NONE:
+                    break;
+                default:
+                    GetPlayer()->HandleEmote(em->textid);
+                    break;
+            }
+        }
+        return;
+    }
+
     if (!GetPlayer()->CanSpeak())
     {
         std::string timeStr = "";

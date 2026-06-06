@@ -1363,7 +1363,7 @@ void Group::SendUpdate()
     for (member_citerator citr = m_memberSlots.begin(); citr != m_memberSlots.end(); ++citr)
     {
         Player *player = sObjectMgr.GetPlayer(citr->guid);
-        if (!player || !player->GetSession() || player->GetGroup() != this)
+        if (!player || !player->GetSession() || !player->GetSession()->GetSocket() || player->GetGroup() != this)
             continue;
 
         // guess size
