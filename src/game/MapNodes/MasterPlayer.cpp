@@ -431,7 +431,7 @@ void MasterPlayer::SaveActions()
         {
             case ACTIONBUTTON_NEW:
             {
-                SqlStatement stmt = CharacterDatabase.CreateStatement(insertAction, "INSERT INTO character_action (guid,button,action,type) VALUES (?, ?, ?, ?)");
+                SqlStatement stmt = CharacterDatabase.CreateStatement(insertAction, "REPLACE INTO character_action (guid,button,action,type) VALUES (?, ?, ?, ?)");
                 stmt.addUInt32(GetGUIDLow());
                 stmt.addUInt32(uint32(itr->first));
                 stmt.addUInt32(itr->second.GetAction());

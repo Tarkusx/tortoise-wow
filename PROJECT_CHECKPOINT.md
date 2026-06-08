@@ -17,6 +17,10 @@ The server runs on the MaNGOS (tortoise-wow) core with the `playerbots` module i
 3. **Group Handling**: Fixed crashes in `Group::SendUpdate` by verifying the socket connection. Altered group invite handling (`GroupHandler.cpp`) so bots can directly join groups without needing fake client response packets.
 4. **Chat & Emotes**: Added null socket safety checks to `ChatHandler.cpp` and `SayAction.cpp` so bots can use text emotes and chat without crashing the server.
 5. **Travel Target Safety**: Added fallback logic in `TravelMgr` (`FindFallbackTeleCachePosition`) to prevent stalls and crashes when bots fail to find valid travel destinations. Added proper clearing of travel values on target reset.
+6. **Talent System Spec Support**: Upstream playerbots shipped with Vanilla specs that failed to apply against the Turtle WoW talent tree layout. Replaced legacy config specs with TWoW-compliant specs (`simple_warrior`, `simple_paladin`, etc.) in `aiplayerbot.conf.dist.in`.
+7. **Equipment Underflow Crash (`statWeight`)**: Fixed a severe underflow bug in `RandomItemMgr` where low-level rings/trinkets with stat weights < 1.0 were being cast to an unsigned integer, resulting in a large integer loop underflow during equipment calculation.
+8. **Offline Rndbot Init SIGSEGV**: Fixed a null pointer dereference in `MapNodes::MasterPlayer::GetTerrainHeight()` caused by bots attempting to initialize equipment/stats out-of-world during startup. Patched `Item::CreateItem` parameter logic to safely skip line-of-sight/Z-axis map checks for bots lacking a valid `map_id`.
+9. **Random Bot Resource Restoration (Passivity Fix)**: Fixed an issue where randomly spawned bots would enter the world with low or 0 health/mana/energy. This immediately failed the internal `group ready` check, causing them to sit passively instead of triggering travel/quest logic. Bots are now properly restored to 100% resources during `RandomizeFirst` and `OnBotLoginInternal`.
 
 ## Current Known-Good Configuration
 - Playerbots login successfully.

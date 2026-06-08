@@ -76,11 +76,15 @@ public:
 
     uint32 GetMaxEntry() const
     {
-        uint32 maxEntry = 0;
-        for (auto const& [id, _] : sObjectMgr.GetItemPrototypeMap())
-            maxEntry = std::max(maxEntry, id);
-
-        return maxEntry + 1;
+        static uint32 cachedMax = 0;
+        if (!cachedMax)
+        {
+            uint32 maxEntry = 0;
+            for (auto const& [id, _] : sObjectMgr.GetItemPrototypeMap())
+                maxEntry = std::max(maxEntry, id);
+            cachedMax = maxEntry + 1;
+        }
+        return cachedMax;
     }
 };
 
@@ -102,11 +106,15 @@ public:
 
     uint32 GetMaxEntry() const
     {
-        uint32 maxEntry = 0;
-        for (auto const& [id, _] : sObjectMgr.GetCreatureInfoMap())
-            maxEntry = std::max(maxEntry, id);
-
-        return maxEntry + 1;
+        static uint32 cachedMax = 0;
+        if (!cachedMax)
+        {
+            uint32 maxEntry = 0;
+            for (auto const& [id, _] : sObjectMgr.GetCreatureInfoMap())
+                maxEntry = std::max(maxEntry, id);
+            cachedMax = maxEntry + 1;
+        }
+        return cachedMax;
     }
 };
 
@@ -128,11 +136,15 @@ public:
 
     uint32 GetMaxEntry() const
     {
-        uint32 maxEntry = 0;
-        for (auto const& [id, _] : sObjectMgr.GetGameObjectInfoMap())
-            maxEntry = std::max(maxEntry, id);
-
-        return maxEntry + 1;
+        static uint32 cachedMax = 0;
+        if (!cachedMax)
+        {
+            uint32 maxEntry = 0;
+            for (auto const& [id, _] : sObjectMgr.GetGameObjectInfoMap())
+                maxEntry = std::max(maxEntry, id);
+            cachedMax = maxEntry + 1;
+        }
+        return cachedMax;
     }
 };
 
@@ -153,11 +165,15 @@ public:
 
     uint32 GetMaxEntry() const
     {
-        uint32 maxEntry = 0;
-        for (auto const& [id, _] : sObjectMgr.GetFactionTemplateMap())
-            maxEntry = std::max(maxEntry, id);
-
-        return maxEntry + 1;
+        static uint32 cachedMax = 0;
+        if (!cachedMax)
+        {
+            uint32 maxEntry = 0;
+            for (auto const& [id, _] : sObjectMgr.GetFactionTemplateMap())
+                maxEntry = std::max(maxEntry, id);
+            cachedMax = maxEntry + 1;
+        }
+        return cachedMax;
     }
 };
 
@@ -184,11 +200,15 @@ public:
 
     uint32 GetMaxEntry() const
     {
-        uint32 maxEntry = 0;
-        for (auto const& [id, _] : sObjectMgr.GetFactionMap())
-            maxEntry = std::max(maxEntry, id);
-
-        return maxEntry + 1;
+        static uint32 cachedMax = 0;
+        if (!cachedMax)
+        {
+            uint32 maxEntry = 0;
+            for (auto const& [id, _] : sObjectMgr.GetFactionMap())
+                maxEntry = std::max(maxEntry, id);
+            cachedMax = maxEntry + 1;
+        }
+        return cachedMax;
     }
 };
 
